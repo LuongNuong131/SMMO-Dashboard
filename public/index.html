@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMMO Dashboard - LuNu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Rajdhani", sans-serif;
+        background: #000;
+        color: #e2e8f0;
+        overflow-x: hidden;
+      }
+      .cyber-font {
+        font-family: "Orbitron", sans-serif;
+      }
+
+      /* Animated gradient background */
+      .gradient-bg {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(
+          125deg,
+          #0a0e27 0%,
+          #1a0b2e 25%,
+          #16213e 50%,
+          #0f3460 75%,
+          #0a0e27 100%
+        );
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      /* Floating particles */
+      .particle {
+        position: fixed;
+        background: rgba(6, 182, 212, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: float 20s infinite;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.6;
+        }
+        90% {
+          opacity: 0.3;
+        }
+        50% {
+          transform: translate(100px, -100px) scale(1.5);
+        }
+      }
+
+      /* Glass panels */
+      .glass-panel {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+      .glass-panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(6, 182, 212, 0.1),
+          transparent
+        );
+        animation: shimmer 3s infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      /* Neon effects */
+      .neon-text {
+        text-shadow: 0 0 10px rgba(6, 182, 212, 0.8),
+          0 0 20px rgba(6, 182, 212, 0.6), 0 0 30px rgba(6, 182, 212, 0.4);
+        animation: neonPulse 2s ease-in-out infinite;
+      }
+      @keyframes neonPulse {
+        0%,
+        100% {
+          text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+        }
+        50% {
+          text-shadow: 0 0 20px rgba(6, 182, 212, 1);
+        }
+      }
+      .neon-border {
+        position: relative;
+        border: 2px solid transparent;
+        background: linear-gradient(
+              rgba(15, 23, 42, 0.8),
+              rgba(15, 23, 42, 0.8)
+            )
+            padding-box,
+          linear-gradient(135deg, #06b6d4, #3b82f6, #8b5cf6) border-box;
+      }
+
+      /* Hover & Animation */
+      .stat-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+      .stat-card:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+        border-color: rgba(6, 182, 212, 0.5);
+      }
+      .equip-item {
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      .equip-item:hover {
+        transform: translateX(10px);
+        background: rgba(6, 182, 212, 0.1);
+      }
+
+      /* Button */
+      .cyber-button {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      .cyber-button:active {
+        transform: scale(0.95);
+      }
+
+      /* Loading & Fade */
+      .loading-bar {
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+        animation: loadingSlide 1.5s ease-in-out infinite;
+      }
+      @keyframes loadingSlide {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .delay-100 {
+        animation-delay: 0.1s;
+      }
+      .delay-200 {
+        animation-delay: 0.2s;
+      }
+      .delay-300 {
+        animation-delay: 0.3s;
+      }
+
+      /* Item Results */
+      .item-card {
+        background: rgba(15, 23, 42, 0.9);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(6, 182, 212, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+          0 0 100px rgba(6, 182, 212, 0.2);
+        animation: slideUp 0.5s ease-out;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Rarities */
+      .rarity-common {
+        background: rgba(156, 163, 175, 0.2);
+        border-color: rgba(156, 163, 175, 0.5);
+        color: #9ca3af;
+      }
+      .rarity-uncommon {
+        background: rgba(34, 197, 94, 0.2);
+        border-color: rgba(34, 197, 94, 0.5);
+        color: #22c55e;
+      }
+      .rarity-rare {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.5);
+        color: #3b82f6;
+      }
+      .rarity-epic {
+        background: rgba(168, 85, 247, 0.2);
+        border-color: rgba(168, 85, 247, 0.5);
+        color: #a855f7;
+      }
+      .rarity-legendary {
+        background: rgba(251, 191, 36, 0.2);
+        border-color: rgba(251, 191, 36, 0.5);
+        color: #fbbf24;
+      }
+
+      .grid-bg {
+        background-image: linear-gradient(
+            rgba(6, 182, 212, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+      }
+      .status-online {
+        animation: statusBlink 2s ease-in-out infinite;
+      }
+      @keyframes statusBlink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gradient-bg"></div>
+    <div class="grid-bg fixed inset-0 opacity-30"></div>
+    <div
+      class="particle"
+      style="width: 4px; height: 4px; top: 10%; left: 10%; animation-delay: 0s"
+    ></div>
+    <div
+      class="particle"
+      style="width: 6px; height: 6px; top: 50%; left: 80%; animation-delay: 2s"
+    ></div>
+    <div
+      class="particle"
+      style="width: 3px; height: 3px; top: 80%; left: 20%; animation-delay: 4s"
+    ></div>
+    <div
+      class="particle"
+      style="width: 5px; height: 5px; top: 30%; left: 60%; animation-delay: 6s"
+    ></div>
+
+    <div class="relative z-10 container mx-auto p-4 md:p-6 lg:p-8">
+      <header class="glass-panel p-6 rounded-2xl mb-8 fade-in">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-4"
+        >
+          <div class="text-center md:text-left">
+            <h1
+              class="text-4xl md:text-5xl font-black cyber-font tracking-widest"
+            >
+              <span class="neon-text text-cyan-400">SMMO</span>
+              <span class="text-white">NEXUS</span>
+            </h1>
+            <p class="text-slate-400 text-sm mt-2 tracking-wide">
+              <span class="text-cyan-400">OPERATOR:</span> LuNu
+              <span class="text-slate-600 mx-2">|</span>
+              <span class="text-cyan-400">ID:</span> 1283624
+            </p>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-right">
+              <div class="text-xs text-slate-500 uppercase tracking-wider">
+                System Status
+              </div>
+              <div class="flex items-center gap-2 mt-1">
+                <div
+                  class="w-2 h-2 bg-green-500 rounded-full status-online"
+                ></div>
+                <span class="text-green-400 font-bold text-sm cyber-font"
+                  >ONLINE</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="loading-bar mt-4"></div>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-1 space-y-6">
+          <div class="glass-panel p-6 rounded-2xl fade-in delay-100">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="relative">
+                <img
+                  id="pAvatar"
+                  src=""
+                  alt="Player avatar"
+                  class="w-24 h-24 rounded-xl border-2 border-cyan-500 avatar-glow object-cover bg-slate-800"
+                />
+                <div
+                  class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-slate-900 rounded-full status-online"
+                ></div>
+              </div>
+              <div class="flex-1">
+                <h2
+                  id="pName"
+                  class="text-3xl font-bold text-white mb-1 cyber-font"
+                >
+                  Loading...
+                </h2>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-cyan-400 text-xl font-bold cyber-font"
+                    >LV.</span
+                  >
+                  <span
+                    id="pLevel"
+                    class="text-2xl font-bold text-white cyber-font"
+                    >--</span
+                  >
+                </div>
+                <p
+                  class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full inline-block"
+                  id="pGuild"
+                >
+                  Guild: ---
+                </p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div
+                class="stat-card glass-panel p-4 rounded-xl border border-slate-700/50"
+              >
+                <div
+                  class="text-slate-400 text-xs uppercase tracking-wider mb-1"
+                >
+                  Strength
+                </div>
+                <div
+                  id="pStr"
+                  class="text-2xl font-bold text-red-400 cyber-font"
+                >
+                  ---
+                </div>
+              </div>
+              <div
+                class="stat-card glass-panel p-4 rounded-xl border border-slate-700/50"
+              >
+                <div
+                  class="text-slate-400 text-xs uppercase tracking-wider mb-1"
+                >
+                  Defense
+                </div>
+                <div
+                  id="pDef"
+                  class="text-2xl font-bold text-blue-400 cyber-font"
+                >
+                  ---
+                </div>
+              </div>
+              <div
+                class="stat-card glass-panel p-4 rounded-xl border border-slate-700/50"
+              >
+                <div
+                  class="text-slate-400 text-xs uppercase tracking-wider mb-1"
+                >
+                  Dexterity
+                </div>
+                <div
+                  id="pDex"
+                  class="text-2xl font-bold text-green-400 cyber-font"
+                >
+                  ---
+                </div>
+              </div>
+              <div
+                class="stat-card glass-panel p-4 rounded-xl border border-slate-700/50"
+              >
+                <div
+                  class="text-slate-400 text-xs uppercase tracking-wider mb-1"
+                >
+                  Gold
+                </div>
+                <div
+                  id="pGold"
+                  class="text-2xl font-bold text-yellow-400 cyber-font"
+                >
+                  ---
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="glass-panel p-6 rounded-2xl fade-in delay-200">
+            <div
+              class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-700/50"
+            >
+              <span class="text-2xl">⚔️</span>
+              <h3 class="text-xl font-bold text-white cyber-font">LOADOUT</h3>
+            </div>
+            <ul id="pEquip" class="space-y-2 text-sm">
+              <li class="text-center italic text-slate-500 py-4">
+                Scanning equipment...
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2">
+          <div
+            class="glass-panel p-6 md:p-8 rounded-2xl h-full fade-in delay-300"
+          >
+            <h3
+              class="text-2xl md:text-3xl font-black text-cyan-400 mb-8 cyber-font neon-text"
+            >
+              ITEM DATABASE
+            </h3>
+            <div class="flex gap-3 mb-8">
+              <input
+                type="number"
+                id="itemIdInput"
+                placeholder="Enter Item ID..."
+                class="flex-1 bg-slate-900/80 border-2 border-slate-700 text-white px-6 py-4 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/50 transition-all text-lg"
+              />
+              <button
+                onclick="lookupItem()"
+                class="cyber-button bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold px-10 py-4 rounded-xl shadow-lg shadow-cyan-500/50 transition-all relative overflow-hidden cyber-font"
+              >
+                SCAN
+              </button>
+            </div>
+
+            <div id="itemResult" class="hidden">
+              <div class="item-card p-6 md:p-8 rounded-2xl">
+                <div class="flex flex-col md:flex-row gap-6">
+                  <div class="flex-shrink-0">
+                    <img
+                      id="itemImg"
+                      src=""
+                      alt="Item"
+                      class="w-40 h-40 object-contain bg-black/30 rounded-xl border-2 border-cyan-500/30 p-4"
+                    />
+                  </div>
+                  <div class="flex-grow">
+                    <div
+                      class="flex flex-col md:flex-row justify-between items-start gap-4 mb-6"
+                    >
+                      <div>
+                        <h2
+                          id="itemName"
+                          class="text-3xl font-bold text-white mb-3 cyber-font"
+                        >
+                          ---
+                        </h2>
+                        <div class="flex flex-wrap gap-2">
+                          <span
+                            id="itemType"
+                            class="bg-slate-700/50 text-xs px-3 py-1.5 rounded-lg text-slate-300 border border-slate-600 uppercase tracking-wide"
+                            >---</span
+                          >
+                          <span
+                            id="itemRarity"
+                            class="text-xs px-3 py-1.5 rounded-lg border uppercase tracking-wide"
+                            >---</span
+                          >
+                        </div>
+                      </div>
+                      <div class="text-right glass-panel p-4 rounded-xl">
+                        <div
+                          class="text-slate-400 text-xs uppercase tracking-wider mb-1"
+                        >
+                          NPC Value
+                        </div>
+                        <div
+                          id="itemValue"
+                          class="text-2xl font-bold text-white cyber-font"
+                        >
+                          ---
+                        </div>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                      <div class="neon-border p-4 rounded-xl">
+                        <div
+                          class="text-slate-400 text-xs mb-2 uppercase tracking-wider"
+                        >
+                          Market Low
+                        </div>
+                        <div
+                          id="marketLow"
+                          class="text-yellow-400 font-bold text-2xl cyber-font"
+                        >
+                          ---
+                        </div>
+                      </div>
+                      <div class="neon-border p-4 rounded-xl">
+                        <div
+                          class="text-slate-400 text-xs mb-2 uppercase tracking-wider"
+                        >
+                          Market High
+                        </div>
+                        <div
+                          id="marketHigh"
+                          class="text-white font-bold text-2xl cyber-font"
+                        >
+                          ---
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="glass-panel p-4 rounded-xl border border-cyan-500/30"
+                    >
+                      <div
+                        class="text-slate-400 text-xs mb-2 uppercase tracking-wider"
+                      >
+                        Stats
+                      </div>
+                      <div
+                        id="itemStats"
+                        class="text-cyan-300 font-bold text-lg cyber-font"
+                      >
+                        ---
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="itemError"
+              class="hidden mt-4 p-6 bg-red-900/20 border-2 border-red-500/50 text-red-200 rounded-xl text-center cyber-font"
+            >
+              <div class="text-4xl mb-2">⚠️</div>
+              <div class="text-lg font-bold">SCAN FAILED</div>
+              <div class="text-sm text-red-300 mt-1">
+                Item not found or ID invalid
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const MY_ID = 1283624;
+
+      async function fetchProxy(endpoint) {
+        try {
+          // Gọi API qua backend server.js để tránh CORS
+          const res = await fetch(`/api/proxy/${endpoint}`);
+          return await res.json();
+        } catch (e) {
+          console.error("Fetch error:", e);
+          return null;
+        }
+      }
+
+      async function init() {
+        const info = await fetchProxy(`player/info/${MY_ID}`);
+        if (info) {
+          document.getElementById("pName").innerText = info.name;
+          document.getElementById("pLevel").innerText = info.level;
+          document.getElementById("pGuild").innerText = info.guild
+            ? `Guild: ${info.guild.name}`
+            : "No Guild";
+          document.getElementById("pStr").innerText =
+            info.str + (info.bonus_str ? `+${info.bonus_str}` : "");
+          document.getElementById("pDef").innerText =
+            info.def + (info.bonus_def ? `+${info.bonus_def}` : "");
+          document.getElementById("pDex").innerText =
+            info.dex + (info.bonus_dex ? `+${info.bonus_dex}` : "");
+          document.getElementById("pGold").innerText =
+            info.gold.toLocaleString();
+
+          let avt = info.avatar;
+          if (avt && !avt.startsWith("http"))
+            avt = "https://web.simple-mmo.com" + avt;
+          document.getElementById("pAvatar").src = avt;
+        }
+
+        const equips = await fetchProxy(`player/equipment/${MY_ID}`);
+        const ul = document.getElementById("pEquip");
+        ul.innerHTML = "";
+        if (equips && Object.keys(equips).length) {
+          let delay = 0;
+          for (let [slot, name] of Object.entries(equips)) {
+            ul.innerHTML += `
+              <li class="equip-item flex justify-between items-center glass-panel p-3 rounded-lg border border-slate-700/50 fade-in" style="animation-delay: ${delay}s">
+                <span class="text-white font-medium">${name}</span>
+                <span class="text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded">${slot}</span>
+              </li>`;
+            delay += 0.1;
+          }
+        } else {
+          ul.innerHTML = `<li class="text-slate-500 italic text-center py-4">Empty loadout</li>`;
+        }
+      }
+
+      async function lookupItem() {
+        const id = document.getElementById("itemIdInput").value;
+        if (!id) return;
+
+        const resultDiv = document.getElementById("itemResult");
+        const errorDiv = document.getElementById("itemError");
+        resultDiv.classList.add("hidden");
+        errorDiv.classList.add("hidden");
+
+        const data = await fetchProxy(`item/info/${id}`);
+
+        if (!data || data.error) {
+          errorDiv.classList.remove("hidden");
+          return;
+        }
+
+        resultDiv.classList.remove("hidden");
+        document.getElementById("itemName").innerText =
+          data.name || "Unknown Item";
+        document.getElementById("itemType").innerText = data.type || "Unknown";
+
+        const rarityEl = document.getElementById("itemRarity");
+        const rarity = data.rarity || "Common";
+        rarityEl.innerText = rarity;
+        rarityEl.className = `text-xs px-3 py-1.5 rounded-lg border uppercase tracking-wide rarity-${rarity.toLowerCase()}`;
+
+        document.getElementById("itemValue").innerText = (
+          data.value || 0
+        ).toLocaleString();
+
+        let img = data.image_url;
+        if (img && !img.startsWith("http"))
+          img = "https://web.simple-mmo.com" + img;
+        document.getElementById("itemImg").src = img;
+
+        const low = data.market?.low ? data.market.low.toLocaleString() : "N/A";
+        const high = data.market?.high
+          ? data.market.high.toLocaleString()
+          : "N/A";
+        document.getElementById("marketLow").innerText = low;
+        document.getElementById("marketHigh").innerText = high;
+
+        let stats = [];
+        if (data.stat1)
+          stats.push(`${data.stat1.toUpperCase()} +${data.stat1modifier}`);
+        if (data.stat2)
+          stats.push(`${data.stat2.toUpperCase()} +${data.stat2modifier}`);
+        document.getElementById("itemStats").innerText =
+          stats.join(" | ") || "No Stats";
+      }
+
+      init();
+    </script>
+  </body>
+</html>
