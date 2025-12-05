@@ -5,12 +5,12 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CẤU HÌNH
+// CẤU HÌNH (Đã chèn lại API Key cứng làm giá trị mặc định)
 const CONFIG = {
-  // Lấy key từ biến môi trường của Vercel
+  // Nếu biến môi trường không có, sẽ sử dụng Key cứng này
   API_KEY:
     process.env.SMMO_API_KEY ||
-    "WheDlZJpvB7C01xLyMaBe4ezeZeWBQCBUEYx5yr9BNRWLMtCyT61kXRzq9idLYCaYq0E12S9nqwv1N7l",
+    "WheDlZJpvB7C01xLyMaBe4ezeZeWBQCBUEYx5yr9BNRWLMtCyT61kXRzq9idLYCaYq0E12S9nqwv1N7l", // <--- KEY CỨNG ĐÃ ĐƯỢC CHÈN LẠI
   MY_ID: 1283624,
   API_URL: "https://api.simple-mmo.com/v1",
 };
@@ -23,6 +23,12 @@ app.get(/^\/api\/proxy\/(.*)/, async (req, res) => {
   try {
     const endpoint = req.params[0];
     console.log(`[Proxy] Requesting: ${endpoint}`);
+
+    // Kiểm tra API Key đã được cấu hình chưa (sẽ luôn có do đã hardcode)
+    if (!CONFIG.API_KEY) {
+      // Tuy nhiên, vẫn giữ lỗi này nếu cả hardcode và env đều fail (rất hiếm)
+      return res.status(500).json({ error: "API Key not configured." });
+    }
 
     const params = new URLSearchParams();
     params.append("api_key", CONFIG.API_KEY);
