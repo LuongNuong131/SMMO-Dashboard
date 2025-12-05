@@ -1,614 +1,584 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SMMO Dashboard - LuNu</title>
+    <title>SMMO - Thiên Cơ Các | Celestial Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Philosopher:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ["Philosopher", "sans-serif"],
+              num: ["Cinzel", "serif"],
+              body: ["Manrope", "sans-serif"],
+            },
+            colors: {
+              void: "#050505",
+              gold: {
+                DEFAULT: "#d4af37",
+                glow: "#fcd34d",
+                dim: "#785c15",
+              },
+              glass: {
+                surface: "rgba(20, 20, 25, 0.7)",
+                border: "rgba(255, 255, 255, 0.08)",
+                highlight: "rgba(255, 255, 255, 0.03)",
+              },
+            },
+            animation: {
+              "spin-slow": "spin 20s linear infinite",
+              float: "float 6s ease-in-out infinite",
+              pulse: "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              shimmer: "shimmer 2s linear infinite",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+              shimmer: {
+                "0%": { backgroundPosition: "-1000px 0" },
+                "100%": { backgroundPosition: "1000px 0" },
+              },
+            },
+          },
+        },
+      };
+    </script>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+      /* --- GLOBAL EFFECTS --- */
       body {
-        font-family: "Rajdhani", sans-serif;
-        background: #000;
-        color: #e2e8f0;
-        overflow-x: hidden;
-      }
-      .cyber-font {
-        font-family: "Orbitron", sans-serif;
-      }
-
-      /* Animated gradient background */
-      .gradient-bg {
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(
-          125deg,
-          #0a0e27 0%,
-          #1a0b2e 25%,
-          #16213e 50%,
-          #0f3460 75%,
-          #0a0e27 100%
-        );
-        background-size: 400% 400%;
-        animation: gradientShift 15s ease infinite;
-      }
-      @keyframes gradientShift {
-        0%,
-        100% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
+        background-color: #050505;
+        background-image: radial-gradient(
+            circle at 50% 0%,
+            rgba(212, 175, 55, 0.15) 0%,
+            transparent 50%
+          ),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        color: #e5e7eb;
       }
 
-      /* Floating particles */
-      .particle {
-        position: fixed;
-        background: rgba(6, 182, 212, 0.4);
-        border-radius: 50%;
-        pointer-events: none;
-        animation: float 20s infinite;
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
       }
-      @keyframes float {
-        0%,
-        100% {
-          transform: translate(0, 0) scale(1);
-          opacity: 0;
-        }
-        10% {
-          opacity: 0.6;
-        }
-        90% {
-          opacity: 0.3;
-        }
-        50% {
-          transform: translate(100px, -100px) scale(1.5);
-        }
+      ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(212, 175, 55, 0.5);
       }
 
-      /* Glass panels */
+      /* Glass Card Utility */
       .glass-panel {
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        position: relative;
-        overflow: hidden;
-      }
-      .glass-panel::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(6, 182, 212, 0.1),
-          transparent
-        );
-        animation: shimmer 3s infinite;
-      }
-      @keyframes shimmer {
-        0% {
-          left: -100%;
-        }
-        100% {
-          left: 100%;
-        }
+        background: rgba(20, 20, 25, 0.7);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
       }
 
-      /* Neon effects */
-      .neon-text {
-        text-shadow: 0 0 10px rgba(6, 182, 212, 0.8),
-          0 0 20px rgba(6, 182, 212, 0.6), 0 0 30px rgba(6, 182, 212, 0.4);
-        animation: neonPulse 2s ease-in-out infinite;
-      }
-      @keyframes neonPulse {
-        0%,
-        100% {
-          text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
-        }
-        50% {
-          text-shadow: 0 0 20px rgba(6, 182, 212, 1);
-        }
-      }
-      .neon-border {
-        position: relative;
-        border: 2px solid transparent;
-        background: linear-gradient(
-              rgba(15, 23, 42, 0.8),
-              rgba(15, 23, 42, 0.8)
-            )
-            padding-box,
-          linear-gradient(135deg, #06b6d4, #3b82f6, #8b5cf6) border-box;
+      .glass-panel:hover {
+        border-color: rgba(212, 175, 55, 0.3);
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.05);
       }
 
-      /* Hover & Animation */
-      .stat-card {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        cursor: pointer;
-      }
-      .stat-card:hover {
-        transform: translateY(-5px) scale(1.05);
-        box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
-        border-color: rgba(6, 182, 212, 0.5);
-      }
-      .equip-item,
-      .skill-item {
-        transition: all 0.3s ease;
-        position: relative;
-      }
-      .equip-item:hover,
-      .skill-item:hover {
-        transform: translateX(10px);
-        background: rgba(6, 182, 212, 0.1);
-      }
-
-      /* Button */
-      .cyber-button {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-      }
-      .cyber-button:active {
-        transform: scale(0.95);
-      }
-
-      /* Loading & Fade */
-      .loading-bar {
-        height: 3px;
-        background: linear-gradient(90deg, transparent, #06b6d4, transparent);
-        animation: loadingSlide 1.5s ease-in-out infinite;
-      }
-      @keyframes loadingSlide {
-        0% {
-          transform: translateX(-100%);
-        }
-        100% {
-          transform: translateX(100%);
-        }
-      }
-      .fade-in {
-        animation: fadeIn 0.8s ease-out forwards;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .delay-100 {
-        animation-delay: 0.1s;
-      }
-      .delay-200 {
-        animation-delay: 0.2s;
-      }
-      .delay-300 {
-        animation-delay: 0.3s;
-      }
-      .delay-400 {
-        animation-delay: 0.4s;
-      }
-
-      /* Item Results */
-      .item-card {
-        background: rgba(15, 23, 42, 0.9);
-        -webkit-backdrop-filter: blur(20px);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(6, 182, 212, 0.3);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
-          0 0 100px rgba(6, 182, 212, 0.2);
-        animation: slideUp 0.5s ease-out;
-      }
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(50px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* Rarities */
-      .rarity-common {
-        background: rgba(156, 163, 175, 0.2);
-        border-color: rgba(156, 163, 175, 0.5);
+      /* Rarity Colors (Text & Shadows) */
+      .rarity-Common {
         color: #9ca3af;
       }
-      .rarity-uncommon {
-        background: rgba(34, 197, 94, 0.2);
-        border-color: rgba(34, 197, 94, 0.5);
-        color: #22c55e;
+      .rarity-Uncommon {
+        color: #34d399;
       }
-      .rarity-rare {
-        background: rgba(59, 130, 246, 0.2);
-        border-color: rgba(59, 130, 246, 0.5);
-        color: #3b82f6;
+      .rarity-Rare {
+        color: #60a5fa;
       }
-      .rarity-epic {
-        background: rgba(168, 85, 247, 0.2);
-        border-color: rgba(168, 85, 247, 0.5);
-        color: #a855f7;
+      .rarity-Elite {
+        color: #a78bfa;
       }
-      .rarity-legendary {
-        background: rgba(251, 191, 36, 0.2);
-        border-color: rgba(251, 191, 36, 0.5);
+      .rarity-Epic {
+        color: #e879f9;
+      }
+      .rarity-Legendary {
         color: #fbbf24;
       }
+      .rarity-Celestial {
+        color: #f87171;
+      }
 
-      .grid-bg {
-        background-image: linear-gradient(
-            rgba(6, 182, 212, 0.03) 1px,
-            transparent 1px
-          ),
-          linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
+      /* Utilities */
+      .text-glow {
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
       }
-      .status-online {
-        animation: statusBlink 2s ease-in-out infinite;
+      .clip-diagonal {
+        clip-path: polygon(
+          10px 0,
+          100% 0,
+          100% calc(100% - 10px),
+          calc(100% - 10px) 100%,
+          0 100%,
+          0 10px
+        );
       }
-      @keyframes statusBlink {
+
+      /* Shimmer effect */
+      .shimmer {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        background-size: 1000px 100%;
+        animation: shimmer 2s infinite;
+      }
+
+      /* Loading skeleton */
+      @keyframes pulse-subtle {
         0%,
         100% {
-          opacity: 1;
+          opacity: 0.4;
         }
         50% {
-          opacity: 0.5;
+          opacity: 0.6;
         }
+      }
+      .skeleton {
+        animation: pulse-subtle 2s ease-in-out infinite;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.05) 25%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0.05) 75%
+        );
+        background-size: 200% 100%;
       }
     </style>
   </head>
-  <body>
-    <div class="gradient-bg"></div>
-    <div class="grid-bg fixed inset-0 opacity-30"></div>
-    <div
-      class="particle"
-      style="width: 4px; height: 4px; top: 10%; left: 10%; animation-delay: 0s"
-    ></div>
-    <div
-      class="particle"
-      style="width: 6px; height: 6px; top: 50%; left: 80%; animation-delay: 2s"
-    ></div>
-    <div
-      class="particle"
-      style="width: 3px; height: 3px; top: 80%; left: 20%; animation-delay: 4s"
-    ></div>
-    <div
-      class="particle"
-      style="width: 5px; height: 5px; top: 30%; left: 60%; animation-delay: 6s"
-    ></div>
-
-    <div class="relative z-10 container mx-auto p-4 md:p-6 lg:p-8">
-      <header class="glass-panel p-6 rounded-2xl mb-8 fade-in">
-        <div
-          class="flex flex-col md:flex-row justify-between items-center gap-4"
-        >
-          <div class="text-center md:text-left">
-            <h1
-              class="text-4xl md:text-5xl font-black cyber-font tracking-widest"
+  <body
+    class="font-body min-h-screen p-4 md:p-8 selection:bg-gold selection:text-black flex flex-col items-center"
+  >
+    <main class="w-full max-w-7xl relative z-10">
+      <header
+        class="flex flex-col md:flex-row justify-between items-end mb-10 pb-6 border-b border-white/5 relative"
+      >
+        <div class="relative z-10">
+          <div class="flex items-center gap-3 mb-1">
+            <div class="h-px w-8 bg-gold"></div>
+            <span class="text-gold font-num text-xs tracking-[0.3em] uppercase"
+              >System V3.0</span
             >
-              <span class="neon-text text-cyan-400">SMMO</span>
-              <span class="text-white">NEXUS</span>
-            </h1>
-            <p class="text-slate-400 text-sm mt-2 tracking-wide">
-              <span class="text-cyan-400">OPERATOR:</span> LuNu
-              <span class="text-slate-600 mx-2">|</span>
-              <span class="text-cyan-400">ID:</span> 1283624
-            </p>
           </div>
-          <div class="flex items-center gap-4">
-            <div class="text-right">
-              <div class="text-xs text-slate-500 uppercase tracking-wider">
-                System Status
-              </div>
-              <div class="flex items-center gap-2 mt-1">
-                <div
-                  class="w-2 h-2 bg-green-500 rounded-full status-online"
-                ></div>
-                <span class="text-green-400 font-bold text-sm cyber-font"
-                  >ONLINE</span
-                >
-              </div>
-            </div>
-          </div>
+          <h1
+            class="text-5xl md:text-7xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#fffbeb] via-[#d4af37] to-[#785c15] drop-shadow-sm"
+          >
+            THIÊN CƠ CÁC
+          </h1>
         </div>
-        <div class="loading-bar mt-4"></div>
+
+        <div
+          class="flex items-center gap-4 mt-4 md:mt-0 glass-panel px-4 py-2 rounded-full"
+        >
+          <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+          <select
+            id="profileSelect"
+            title="Chọn hồ sơ người chơi"
+            onchange="switchProfile()"
+            class="bg-transparent border-none outline-none text-sm font-bold text-gray-300 cursor-pointer hover:text-gold transition font-display uppercase tracking-wider"
+          >
+            <option value="1283624" class="bg-black">LuNu (Main)</option>
+            <option value="1284859" class="bg-black">Account Clone</option>
+          </select>
+        </div>
       </header>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-1 space-y-6">
-          <div class="glass-panel p-6 rounded-2xl fade-in delay-100">
-            <div class="flex items-start gap-4 mb-6">
-              <div class="relative">
-                <img
-                  id="pAvatar"
-                  src=""
-                  alt="Player avatar"
-                  class="w-24 h-24 rounded-xl border-2 border-cyan-500 avatar-glow object-cover bg-slate-800"
-                />
-                <div
-                  class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-slate-900 rounded-full status-online"
-                ></div>
-              </div>
-              <div class="flex-1">
-                <h2
-                  id="pName"
-                  class="text-3xl font-bold text-white mb-1 cyber-font"
-                >
-                  Loading...
-                </h2>
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-cyan-400 text-xl font-bold cyber-font"
-                    >LV.</span
-                  >
-                  <span
-                    id="pLevel"
-                    class="text-2xl font-bold text-white cyber-font"
-                    >--</span
-                  >
-                </div>
-                <p
-                  class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full inline-block"
-                  id="pGuild"
-                >
-                  Guild: ---
-                </p>
+      <div class="relative mb-12 group">
+        <div
+          class="absolute inset-0 bg-gold/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition duration-700"
+        ></div>
+        <div
+          class="glass-panel p-2 rounded-2xl flex items-center relative z-10"
+        >
+          <div class="pl-6 text-2xl animate-float">🔮</div>
+          <input
+            type="number"
+            id="playerSearchInput"
+            placeholder="Nhập ID Đạo Hữu để truy vấn..."
+            class="w-full bg-transparent border-none outline-none text-lg px-4 py-3 text-white placeholder-gray-600 font-display"
+            onkeypress="handleEnter(event)"
+          />
+          <button
+            onclick="searchPlayer()"
+            class="bg-white/5 hover:bg-gold hover:text-black text-gold border border-gold/30 px-8 py-3 rounded-xl font-bold font-num transition-all duration-300 uppercase tracking-widest clip-diagonal"
+          >
+            Soi
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-auto lg:h-[800px]">
+        <div
+          class="lg:col-span-4 glass-panel rounded-3xl p-1 flex flex-col h-full relative overflow-hidden group"
+        >
+          <div
+            class="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50"
+          ></div>
+
+          <div
+            class="relative h-[40%] bg-gradient-to-b from-white/5 to-transparent rounded-t-[20px] flex flex-col items-center justify-center p-6 border-b border-white/5"
+          >
+            <div class="relative w-32 h-32 md:w-40 md:h-40">
+              <div
+                class="absolute inset-0 border border-gold/30 rounded-full animate-spin-slow"
+                style="border-style: dashed"
+              ></div>
+              <div
+                class="absolute -inset-2 border border-white/10 rounded-full"
+              ></div>
+              <img
+                id="pAvatar"
+                src="https://web.simple-mmo.com/img/loading.gif"
+                alt="Player avatar"
+                class="w-full h-full rounded-full object-cover border-4 border-[#121212] shadow-2xl relative z-10"
+              />
+              <div
+                class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-black border border-gold text-gold font-num font-bold px-3 py-1 rounded text-xs shadow-lg z-20 whitespace-nowrap"
+                id="pLevelBadge"
+              >
+                Loading...
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div
-                class="stat-card glass-panel p-4 rounded-xl border border-slate-700/50"
-              >
-                <div
-                  class="text-slate-400 text-xs uppercase tracking-wider mb-1"
-                >
-                  Strength
-                </div>
-                <div
-                  id="pStr"
-                  class="text-2xl font-bold text-red-400 cyber-font"
-                >
-                  ---
-                </div>
-              </div>
-              <div
-                class="stat-card glass-panel p-4 rounded-xl border border-slate-700/50"
-              >
-                <div
-                  class="text-slate-400 text-xs uppercase tracking-wider mb-1"
-                >
-                  Defense
-                </div>
-                <div
-                  id="pDef"
-                  class="text-2xl font-bold text-blue-400 cyber-font"
-                >
-                  ---
-                </div>
-              </div>
-              <div
-                class="stat-card glass-panel p-4 rounded-xl border border-slate-700/50"
-              >
-                <div
-                  class="text-slate-400 text-xs uppercase tracking-wider mb-1"
-                >
-                  Dexterity
-                </div>
-                <div
-                  id="pDex"
-                  class="text-2xl font-bold text-green-400 cyber-font"
-                >
-                  ---
-                </div>
-              </div>
-              <div
-                class="stat-card glass-panel p-4 rounded-xl border border-slate-700/50"
-              >
-                <div
-                  class="text-slate-400 text-xs uppercase tracking-wider mb-1"
-                >
-                  Gold
-                </div>
-                <div
-                  id="pGold"
-                  class="text-2xl font-bold text-yellow-400 cyber-font"
-                >
-                  ---
-                </div>
-              </div>
+
+            <h2
+              id="pName"
+              class="mt-6 text-3xl font-display font-bold text-white tracking-wide"
+            >
+              ---
+            </h2>
+            <div
+              id="pGuild"
+              class="text-xs text-gray-500 font-bold uppercase tracking-[0.2em] mt-1"
+            >
+              ---
             </div>
           </div>
 
-          <div class="glass-panel p-6 rounded-2xl fade-in delay-200">
+          <div
+            class="flex-1 p-6 grid grid-cols-2 gap-3 content-center bg-black/20"
+          >
             <div
-              class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-700/50"
+              class="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-red-500/50 transition group/stat"
             >
-              <span class="text-2xl">⚔️</span>
-              <h3 class="text-xl font-bold text-white cyber-font">LOADOUT</h3>
+              <div
+                class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-2"
+              >
+                Sức Mạnh
+              </div>
+              <div
+                id="pStr"
+                class="text-2xl font-num font-bold text-red-400 group-hover/stat:text-red-300 transition"
+              >
+                ---
+              </div>
             </div>
-            <ul id="pEquip" class="space-y-2 text-sm">
-              <li class="text-center italic text-slate-500 py-4">
-                Scanning equipment...
-              </li>
-            </ul>
-          </div>
-
-          <div class="glass-panel p-6 rounded-2xl fade-in delay-300">
             <div
-              class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-700/50"
+              class="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-blue-500/50 transition group/stat"
             >
-              <span class="text-2xl">⚡</span>
-              <h3 class="text-xl font-bold text-white cyber-font">SKILLS</h3>
+              <div
+                class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-2"
+              >
+                Phòng Thủ
+              </div>
+              <div
+                id="pDef"
+                class="text-2xl font-num font-bold text-blue-400 group-hover/stat:text-blue-300 transition"
+              >
+                ---
+              </div>
             </div>
-            <div id="pSkills" class="space-y-2 text-sm">
-              <div class="text-center italic text-slate-500 py-4">
-                Scanning neural pathways...
+            <div
+              class="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-emerald-500/50 transition group/stat"
+            >
+              <div
+                class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-2"
+              >
+                Khéo Léo
+              </div>
+              <div
+                id="pDex"
+                class="text-2xl font-num font-bold text-emerald-400 group-hover/stat:text-emerald-300 transition"
+              >
+                ---
+              </div>
+            </div>
+            <div
+              class="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-gold/50 transition group/stat"
+            >
+              <div
+                class="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-2"
+              >
+                Tài Phú
+              </div>
+              <div
+                id="pGold"
+                class="text-xl font-num font-bold text-gold truncate group-hover/stat:text-yellow-200 transition"
+              >
+                ---
               </div>
             </div>
           </div>
         </div>
 
-        <div class="lg:col-span-2">
+        <div
+          class="lg:col-span-4 glass-panel rounded-3xl flex flex-col h-full overflow-hidden"
+        >
           <div
-            class="glass-panel p-6 md:p-8 rounded-2xl h-full fade-in delay-300"
+            class="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.02]"
           >
             <h3
-              class="text-2xl md:text-3xl font-black text-cyan-400 mb-8 cyber-font neon-text"
+              class="font-display font-bold text-gold text-lg tracking-widest flex items-center gap-2"
             >
-              ITEM DATABASE
+              <span class="text-xl">⚔️</span> HÀNH TRANG
             </h3>
-            <div class="flex gap-3 mb-8">
+            <span
+              id="equipStatus"
+              class="font-num text-xs text-gray-500 bg-white/5 px-2 py-1 rounded"
+              >0 items</span
+            >
+          </div>
+          <div
+            id="pEquip"
+            class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"
+          ></div>
+        </div>
+
+        <div
+          class="lg:col-span-4 glass-panel rounded-3xl flex flex-col h-full overflow-hidden"
+        >
+          <div class="p-6 border-b border-white/5 bg-white/[0.02]">
+            <h3
+              class="font-display font-bold text-gold text-lg tracking-widest flex items-center gap-2"
+            >
+              <span class="text-xl">📜</span> KỸ NĂNG
+            </h3>
+          </div>
+          <div
+            id="pSkills"
+            class="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar"
+          ></div>
+        </div>
+      </div>
+
+      <section
+        class="mt-12 glass-panel rounded-3xl p-1 md:p-1 relative overflow-hidden"
+      >
+        <div
+          class="bg-[#080808] rounded-[20px] p-8 md:p-12 border border-white/5 relative z-10"
+        >
+          <div class="max-w-xl mx-auto text-center mb-12">
+            <h2
+              class="text-2xl font-display font-bold text-gold mb-2 uppercase tracking-[0.2em]"
+            >
+              Giám Định Bảo Vật
+            </h2>
+            <div
+              class="h-px w-24 bg-gradient-to-r from-transparent via-gray-700 to-transparent mx-auto mb-8"
+            ></div>
+
+            <div class="flex relative group">
+              <div
+                class="absolute -inset-1 bg-gradient-to-r from-gold to-orange-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition"
+              ></div>
               <input
                 type="number"
                 id="itemIdInput"
-                placeholder="Enter Item ID..."
-                class="flex-1 bg-slate-900/80 border-2 border-slate-700 text-white px-6 py-4 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/50 transition-all text-lg"
+                placeholder="ID Thần Khí (VD: 3979)"
+                class="relative z-10 bg-black border border-white/10 text-white p-4 w-full rounded-l-lg outline-none font-num focus:border-gold transition placeholder-gray-700"
               />
               <button
                 onclick="lookupItem()"
-                class="cyber-button bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold px-10 py-4 rounded-xl shadow-lg shadow-cyan-500/50 transition-all relative overflow-hidden cyber-font"
+                class="relative z-10 bg-gold text-black font-bold px-8 py-4 rounded-r-lg hover:bg-white transition uppercase tracking-wider font-display"
               >
-                SCAN
+                Khai Mở
               </button>
             </div>
+          </div>
 
-            <div id="itemResult" class="hidden">
-              <div class="item-card p-6 md:p-8 rounded-2xl">
-                <div class="flex flex-col md:flex-row gap-6">
-                  <div class="flex-shrink-0">
-                    <img
-                      id="itemImg"
-                      src=""
-                      alt="Item"
-                      class="w-40 h-40 object-contain bg-black/30 rounded-xl border-2 border-cyan-500/30 p-4"
-                    />
+          <div id="itemResult" class="hidden animate-float">
+            <div
+              class="max-w-4xl mx-auto glass-panel rounded-2xl overflow-hidden relative border border-white/10 flex flex-col md:flex-row"
+            >
+              <div
+                id="cardBgGlow"
+                class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[100px] opacity-20 pointer-events-none translate-x-1/2 -translate-y-1/2"
+              ></div>
+
+              <div
+                class="md:w-1/3 p-10 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/5 bg-black/20 relative"
+              >
+                <span
+                  id="bgRankLetter"
+                  class="absolute font-display font-black text-[15rem] opacity-[0.02] select-none scale-150"
+                  >S</span
+                <img
+                  id="itemImg"
+                  src=""
+                  alt="Item image"
+                  class="w-32 h-32 object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] z-10 relative transition hover:scale-110 duration-500"
+                />
+                />
+                <span
+                  id="itemRarityBadge"
+                  class="mt-8 z-10 px-4 py-1 rounded border text-[10px] font-bold uppercase tracking-[0.3em] bg-black/50 backdrop-blur-md"
+                  >Legendary</span
+                >
+              </div>
+
+              <div class="md:w-2/3 p-8 md:p-10 relative z-10">
+                <div class="flex justify-between items-start mb-6">
+                  <div>
+                    <div
+                      id="itemType"
+                      class="text-[10px] font-bold uppercase tracking-widest text-gold mb-2 opacity-80"
+                    >
+                      Weapon
+                    </div>
+                    <h2
+                      id="itemName"
+                      class="text-4xl font-display font-bold text-white leading-none"
+                    >
+                      Demon Sword
+                    </h2>
                   </div>
-                  <div class="flex-grow">
-                    <div
-                      class="flex flex-col md:flex-row justify-between items-start gap-4 mb-6"
-                    >
-                      <div>
-                        <h2
-                          id="itemName"
-                          class="text-3xl font-bold text-white mb-3 cyber-font"
-                        >
-                          ---
-                        </h2>
-                        <div class="flex flex-wrap gap-2">
-                          <span
-                            id="itemType"
-                            class="bg-slate-700/50 text-xs px-3 py-1.5 rounded-lg text-slate-300 border border-slate-600 uppercase tracking-wide"
-                            >---</span
-                          >
-                          <span
-                            id="itemRarity"
-                            class="text-xs px-3 py-1.5 rounded-lg border uppercase tracking-wide"
-                            >---</span
-                          >
-                        </div>
-                      </div>
-                      <div class="text-right glass-panel p-4 rounded-xl">
-                        <div
-                          class="text-slate-400 text-xs uppercase tracking-wider mb-1"
-                        >
-                          NPC Value
-                        </div>
-                        <div
-                          id="itemValue"
-                          class="text-2xl font-bold text-white cyber-font"
-                        >
-                          ---
-                        </div>
-                      </div>
+                  <div id="itemValue" class="text-right">
+                    <div class="text-[10px] text-gray-500 uppercase">
+                      Giá trị
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                      <div class="neon-border p-4 rounded-xl">
-                        <div
-                          class="text-slate-400 text-xs mb-2 uppercase tracking-wider"
-                        >
-                          Market Low
-                        </div>
-                        <div
-                          id="marketLow"
-                          class="text-yellow-400 font-bold text-2xl cyber-font"
-                        >
-                          ---
-                        </div>
-                      </div>
-                      <div class="neon-border p-4 rounded-xl">
-                        <div
-                          class="text-slate-400 text-xs mb-2 uppercase tracking-wider"
-                        >
-                          Market High
-                        </div>
-                        <div
-                          id="marketHigh"
-                          class="text-white font-bold text-2xl cyber-font"
-                        >
-                          ---
-                        </div>
-                      </div>
+                    <div class="font-num text-xl text-gray-300">1,000,000</div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                  <div class="bg-white/5 p-3 rounded border border-white/5">
+                    <div class="text-[10px] text-gray-500 uppercase mb-1">
+                      Thị trường (Min)
+                    </div>
+                    <div id="marketLow" class="font-num text-gold font-bold">
+                      ---
+                    </div>
+                  </div>
+                  <div class="bg-white/5 p-3 rounded border border-white/5">
+                    <div class="text-[10px] text-gray-500 uppercase mb-1">
+                      Thị trường (Max)
                     </div>
                     <div
-                      class="glass-panel p-4 rounded-xl border border-cyan-500/30"
+                      id="marketHigh"
+                      class="font-num text-blue-400 font-bold"
                     >
-                      <div
-                        class="text-slate-400 text-xs mb-2 uppercase tracking-wider"
-                      >
-                        Stats
-                      </div>
-                      <div
-                        id="itemStats"
-                        class="text-cyan-300 font-bold text-lg cyber-font"
-                      >
-                        ---
-                      </div>
+                      ---
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div
-              id="itemError"
-              class="hidden mt-4 p-6 bg-red-900/20 border-2 border-red-500/50 text-red-200 rounded-xl text-center cyber-font"
-            >
-              <div class="text-4xl mb-2">⚠️</div>
-              <div class="text-lg font-bold">SCAN FAILED</div>
-              <div class="text-sm text-red-300 mt-1">
-                Item not found or ID invalid
+                <div class="border-t border-white/10 pt-6">
+                  <div
+                    class="text-[10px] text-gray-500 uppercase font-bold mb-3 flex items-center gap-2"
+                  >
+                    <span class="w-1 h-1 bg-gold rounded-full"></span> Thuộc
+                    tính ẩn
+                  </div>
+                  <div id="itemStats" class="flex gap-6"></div>
+                </div>
               </div>
             </div>
           </div>
+
+          <div id="itemError" class="hidden text-center mt-8">
+            <p class="text-red-400 font-display text-lg tracking-wider">
+              ⚠️ Vật phẩm không tồn tại trong dòng thời gian này.
+            </p>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <footer class="mt-12 text-center text-gray-600 text-xs font-num py-8">
+        THIÊN CƠ CÁC © 2025 • DESIGNED FOR SMMO
+      </footer>
+    </main>
 
     <script>
-      const MY_ID = 1283624;
+      /* === LOGIC JAVASCRIPT === */
 
+      // Map tên tiếng Việt cho các slot trang bị với icon
+      const slotNameMap = {
+        helmet: { name: "Mũ", icon: "🪖" },
+        armour: { name: "Áo Giáp", icon: "🛡️" },
+        weapon: { name: "Vũ Khí", icon: "⚔️" },
+        shield: { name: "Khiên", icon: "🛡️" },
+        boots: { name: "Giày", icon: "👢" },
+        legs: { name: "Quần", icon: "👖" },
+        amulet: { name: "Dây Chuyền", icon: "📿" },
+        ring_1: { name: "Nhẫn 1", icon: "💍" },
+        ring_2: { name: "Nhẫn 2", icon: "💍" },
+      };
+
+      // Cấu hình màu sắc theo độ hiếm
+      const RARITY_DATA = {
+        Common: {
+          color: "text-gray-400",
+          bg: "bg-gray-500",
+          glow: "rgba(156, 163, 175, 0.3)",
+        },
+        Uncommon: {
+          color: "text-emerald-400",
+          bg: "bg-emerald-500",
+          glow: "rgba(52, 211, 153, 0.3)",
+        },
+        Rare: {
+          color: "text-blue-400",
+          bg: "bg-blue-500",
+          glow: "rgba(96, 165, 250, 0.4)",
+        },
+        Elite: {
+          color: "text-purple-400",
+          bg: "bg-purple-500",
+          glow: "rgba(167, 139, 250, 0.4)",
+        },
+        Epic: {
+          color: "text-pink-400",
+          bg: "bg-pink-500",
+          glow: "rgba(232, 121, 249, 0.5)",
+        },
+        Legendary: {
+          color: "text-yellow-400",
+          bg: "bg-yellow-500",
+          glow: "rgba(251, 191, 36, 0.6)",
+        },
+        Celestial: {
+          color: "text-red-500",
+          bg: "bg-red-600",
+          glow: "rgba(248, 113, 113, 0.7)",
+        },
+      };
+
+      let currentId = 1283624;
+      let isLoading = false;
+
+      // Hàm fetch proxy với error handling
       async function fetchProxy(endpoint) {
         try {
           const res = await fetch(`/api/proxy/${endpoint}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return await res.json();
         } catch (e) {
           console.error("Fetch error:", e);
@@ -616,131 +586,349 @@
         }
       }
 
-      async function init() {
-        // --- 1. Fetch Basic Info ---
-        const info = await fetchProxy(`player/info/${MY_ID}`);
-        if (info) {
+      // Animate number với easing
+      function animateNumber(element, targetValue, duration = 1000) {
+        const start = parseInt(element.innerText.replace(/,/g, "")) || 0;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(start + (targetValue - start) * eased);
+          element.innerText = current.toLocaleString();
+
+          if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+      }
+
+      function handleEnter(e) {
+        if (e.key === "Enter") searchPlayer();
+      }
+
+      function switchProfile() {
+        if (isLoading) return;
+        currentId = document.getElementById("profileSelect").value;
+        document.getElementById("playerSearchInput").value = "";
+        loadData(currentId);
+      }
+
+      function searchPlayer() {
+        if (isLoading) return;
+        const inputId = document
+          .getElementById("playerSearchInput")
+          .value.trim();
+        if (inputId && /^\d+$/.test(inputId)) loadData(inputId);
+        else alert("⚠️ Vui lòng nhập ID hợp lệ (chỉ số)");
+      }
+
+      /* --- RENDER FUNCTIONS --- */
+
+      function createEquipCard(slot, data) {
+        const slotInfo = slotNameMap[slot] || { name: slot, icon: "📦" };
+
+        // Render Empty Slot
+        if (!data || !data.name) {
+          return `
+            <div class="group flex items-center gap-4 p-4 rounded-xl border-2 border-dashed border-white/10 text-gray-600 hover:border-white/20 transition-all duration-300 hover:bg-white/[0.02]">
+                <div class="w-14 h-14 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 border border-white/10">
+                    ${slotInfo.icon}
+                </div>
+                <div class="flex-1">
+                    <div class="text-xs font-bold uppercase tracking-wider text-gray-500">${slotInfo.name}</div>
+                    <div class="text-[10px] text-gray-700 font-display italic mt-0.5">Trống</div>
+                </div>
+            </div>`;
+        }
+
+        let img = data.image_url;
+        if (img && !img.startsWith("http"))
+          img = "https://web.simple-mmo.com" + img;
+
+        const rarityKey = data.rarity || "Common";
+        const rarityClass = `rarity-${rarityKey}`;
+        const rarityData = RARITY_DATA[rarityKey];
+
+        // Build stats HTML
+        let statsHtml = "";
+        const statBadge = (stat, mod) => `
+          <span class="inline-flex items-center gap-1 text-[10px] bg-gradient-to-r from-white/10 to-white/5 text-gray-200 px-2 py-1 rounded-md font-bold border border-white/10">
+            <span class="text-emerald-400">▲</span>${stat
+              .substr(0, 3)
+              .toUpperCase()} +${mod}
+          </span>`;
+
+        if (data.stat1) statsHtml += statBadge(data.stat1, data.stat1modifier);
+        if (data.stat2)
+          statsHtml += ` ${statBadge(data.stat2, data.stat2modifier)}`;
+
+        return `
+          <div class="group relative flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/10 hover:border-${
+            rarityKey === "Common" ? "white" : rarityData.bg.replace("bg-", "")
+          }/30 transition-all duration-300 cursor-pointer overflow-hidden">
+             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 shimmer"></div>
+                <img src="${img}" alt="Equipment item" class="w-12 h-12 object-contain relative z-10 drop-shadow-lg">
+             <div class="relative w-14 h-14 bg-black/40 rounded-xl border-2 border-white/20 flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <img src="${img}" class="w-12 h-12 object-contain relative z-10 drop-shadow-lg">
+                <div class="absolute inset-0 bg-gradient-to-t from-${
+                  rarityData.bg
+                }/20 to-transparent"></div>
+             </div>
+             
+             <div class="flex-1 min-w-0 relative z-10">
+                <div class="flex justify-between items-start mb-1">
+                    <div class="font-display font-bold text-sm ${rarityClass} truncate pr-2 group-hover:brightness-125 transition drop-shadow-sm">${
+          data.name
+        }</div>
+                    <div class="text-[9px] text-gray-500 uppercase font-bold tracking-wider bg-black/30 px-2 py-0.5 rounded">${
+                      slotInfo.name
+                    }</div>
+                </div>
+                <div class="flex justify-between items-center mt-2">
+                    <div class="flex items-center gap-1 flex-wrap">${statsHtml}</div>
+                    <div class="font-num text-[10px] text-gold/90 font-bold bg-gold/10 px-2 py-1 rounded">${
+                      data.market?.low ? data.market.low.toLocaleString() : "-"
+                    } G</div>
+                </div>
+             </div>
+          </div>
+        `;
+      }
+
+      async function loadData(id) {
+        if (isLoading) return;
+        isLoading = true;
+
+        // UI Loading States
+        document.getElementById("pName").innerText = "Đang đồng bộ...";
+        document.getElementById("pAvatar").src =
+          "https://web.simple-mmo.com/img/loading.gif";
+        document.getElementById("pEquip").innerHTML = `
+            <div class="space-y-3">
+                ${[1, 2, 3, 4]
+                  .map(() => '<div class="h-20 skeleton rounded-xl"></div>')
+                  .join("")}
+            </div>`;
+        document.getElementById("pSkills").innerHTML = `
+            <div class="space-y-4">
+                ${[1, 2, 3]
+                  .map(() => '<div class="h-16 skeleton rounded-xl"></div>')
+                  .join("")}
+            </div>`;
+
+        // 1. Fetch Basic Info
+        const info = await fetchProxy(`player/info/${id}`);
+
+        if (info && !info.error) {
           document.getElementById("pName").innerText = info.name;
-          document.getElementById("pLevel").innerText = info.level;
+          document.getElementById("pLevelBadge").innerText = `LV.${info.level}`;
           document.getElementById("pGuild").innerText = info.guild
-            ? `Guild: ${info.guild.name}`
-            : "No Guild";
-          document.getElementById("pStr").innerText =
-            info.str + (info.bonus_str ? `+${info.bonus_str}` : "");
-          document.getElementById("pDef").innerText =
-            info.def + (info.bonus_def ? `+${info.bonus_def}` : "");
-          document.getElementById("pDex").innerText =
-            info.dex + (info.bonus_dex ? `+${info.bonus_dex}` : "");
-          document.getElementById("pGold").innerText =
-            info.gold.toLocaleString();
+            ? info.guild.name
+            : "Vô Danh";
+
+          // Animate numbers
+          const strTotal = info.str + (info.bonus_str || 0);
+          const defTotal = info.def + (info.bonus_def || 0);
+          const dexTotal = info.dex + (info.bonus_dex || 0);
+
+          animateNumber(document.getElementById("pStr"), strTotal);
+          animateNumber(document.getElementById("pDef"), defTotal);
+          animateNumber(document.getElementById("pDex"), dexTotal);
+          animateNumber(document.getElementById("pGold"), info.gold);
 
           let avt = info.avatar;
           if (avt && !avt.startsWith("http"))
             avt = "https://web.simple-mmo.com" + avt;
           document.getElementById("pAvatar").src = avt;
-        }
-
-        // --- 2. Fetch Equipment ---
-        const equips = await fetchProxy(`player/equipment/${MY_ID}`);
-        const ul = document.getElementById("pEquip");
-        ul.innerHTML = "";
-        if (equips && Object.keys(equips).length) {
-          let delay = 0;
-          for (let [slot, name] of Object.entries(equips)) {
-            ul.innerHTML += `
-              <li class="equip-item flex justify-between items-center glass-panel p-3 rounded-lg border border-slate-700/50 fade-in" style="animation-delay: ${delay}s">
-                <span class="text-white font-medium">${name}</span>
-                <span class="text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded">${slot}</span>
-              </li>`;
-            delay += 0.1;
-          }
         } else {
-          ul.innerHTML = `<li class="text-slate-500 italic text-center py-4">Empty loadout</li>`;
+          document.getElementById("pName").innerText = "Không tồn tại";
+          document.getElementById("pAvatar").src =
+            "https://via.placeholder.com/150/000000/FFFFFF/?text=?";
+          document.getElementById(
+            "pEquip"
+          ).innerHTML = `<div class="text-center text-red-400 py-10 font-display">❌ Không tìm thấy người chơi</div>`;
+          document.getElementById(
+            "pSkills"
+          ).innerHTML = `<div class="text-center text-red-400 py-10 font-display">❌ Không có dữ liệu</div>`;
+          isLoading = false;
+          return;
         }
 
-        // --- 3. Fetch Skills (NEW) ---
-        const skills = await fetchProxy(`player/skills/${MY_ID}`);
+        // 2. Fetch Equipment
+        const equipsContainer = document.getElementById("pEquip");
+        const equips = await fetchProxy(`player/equipment/${id}`);
+
+        if (equips && Object.keys(equips).length) {
+          equipsContainer.innerHTML = "";
+          let count = 0;
+          const sortedSlots = [
+            "helmet",
+            "amulet",
+            "weapon",
+            "armour",
+            "shield",
+            "legs",
+            "boots",
+            "ring_1",
+            "ring_2",
+          ];
+
+          for (let slot of sortedSlots) {
+            let item = equips[slot];
+            if (item) {
+              count++;
+              let itemId =
+                typeof item === "object" ? item.id || item.item_id : item;
+
+              const divId = `slot-${slot}`;
+              const skeleton = document.createElement("div");
+              skeleton.id = divId;
+              skeleton.className = "h-20 skeleton rounded-xl mb-2";
+              equipsContainer.appendChild(skeleton);
+
+              fetchProxy(`item/info/${itemId}`).then((d) => {
+                const el = document.getElementById(divId);
+                if (el) el.outerHTML = createEquipCard(slot, d);
+              });
+            } else {
+              equipsContainer.innerHTML += createEquipCard(slot, {});
+            }
+          }
+          document.getElementById("equipStatus").innerText = `${count} món`;
+        } else {
+          equipsContainer.innerHTML = `<div class="text-center text-gray-600 py-10 font-display italic">Túi hành trang trống rỗng</div>`;
+        }
+
+        // 3. Fetch Skills
+        const skills = await fetchProxy(`player/skills/${id}`);
         const skillsContainer = document.getElementById("pSkills");
         skillsContainer.innerHTML = "";
 
         if (skills && Array.isArray(skills) && skills.length > 0) {
-          // Sắp xếp skill theo level giảm dần để đẹp mắt hơn
           skills.sort((a, b) => b.level - a.level);
-
-          let delay = 0;
-          for (const s of skills) {
-            // Viết hoa chữ cái đầu: "woodcutting" -> "Woodcutting"
-            const sName = s.skill.charAt(0).toUpperCase() + s.skill.slice(1);
-
+          skills.forEach((s) => {
+            const progress = Math.min(100, (s.level / 100) * 100);
             skillsContainer.innerHTML += `
-                  <div class="skill-item flex justify-between items-center glass-panel p-3 rounded-lg border border-slate-700/50 fade-in" style="animation-delay: ${delay}s">
-                    <span class="text-white font-medium">${sName}</span>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[10px] text-slate-400 uppercase tracking-wider hidden sm:inline-block">EXP: ${s.exp.toLocaleString()}</span>
-                        <span class="text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded font-bold">Lv.${
-                          s.level
-                        }</span>
+                    <div class="group relative">
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="font-display font-bold text-gray-200 capitalize text-base group-hover:text-emerald-300 transition">${
+                              s.skill
+                            }</span>
+                            <span class="font-num font-bold text-emerald-400 text-xs bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">Lv.${
+                              s.level
+                            }</span>
+                        </div>
+                        <div class="h-2 w-full bg-white/10 rounded-full overflow-hidden border border-white/10">
+                            <div class="h-full bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-300 transition-all duration-1000 ease-out" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="text-[10px] text-right text-gray-500 mt-1.5 font-num tracking-wider">${s.exp.toLocaleString()} XP</div>
                     </div>
-                  </div>`;
-            delay += 0.1;
-          }
+                `;
+          });
         } else {
-          skillsContainer.innerHTML = `<div class="text-slate-500 italic text-center py-4">No skill data available</div>`;
+          skillsContainer.innerHTML = `<div class="text-center text-gray-600 py-10 font-display italic">Chưa tu luyện kỹ năng nào</div>`;
         }
+
+        isLoading = false;
       }
 
+      /* --- ITEM LOOKUP LOGIC --- */
       async function lookupItem() {
-        const id = document.getElementById("itemIdInput").value;
-        if (!id) return;
+        const id = document.getElementById("itemIdInput").value.trim();
+        if (!id || !/^\d+$/.test(id)) {
+          alert("⚠️ Vui lòng nhập ID hợp lệ");
+          return;
+        }
 
-        const resultDiv = document.getElementById("itemResult");
-        const errorDiv = document.getElementById("itemError");
-        resultDiv.classList.add("hidden");
-        errorDiv.classList.add("hidden");
+        const resEl = document.getElementById("itemResult");
+        const errEl = document.getElementById("itemError");
+
+        resEl.classList.add("hidden");
+        errEl.classList.add("hidden");
 
         const data = await fetchProxy(`item/info/${id}`);
 
         if (!data || data.error) {
-          errorDiv.classList.remove("hidden");
+          errEl.classList.remove("hidden");
           return;
         }
 
-        resultDiv.classList.remove("hidden");
-        document.getElementById("itemName").innerText =
-          data.name || "Unknown Item";
+        resEl.classList.remove("hidden");
+
+        // Populate Data
+        document.getElementById("itemName").innerText = data.name;
+        document.getElementById(
+          "itemName"
+        ).className = `text-4xl font-display font-bold leading-none rarity-${
+          data.rarity || "Common"
+        }`;
         document.getElementById("itemType").innerText = data.type || "Unknown";
+        document.getElementById(
+          "itemValue"
+        ).innerHTML = `<div class="text-[10px] text-gray-500 uppercase">Giá NPC</div><div class="font-num text-xl text-gray-300">${
+          data.value?.toLocaleString() || "N/A"
+        }</div>`;
+        document.getElementById("marketLow").innerText =
+          data.market?.low?.toLocaleString() || "---";
+        document.getElementById("marketHigh").innerText =
+          data.market?.high?.toLocaleString() || "---";
 
-        const rarityEl = document.getElementById("itemRarity");
-        const rarity = data.rarity || "Common";
-        rarityEl.innerText = rarity;
-        rarityEl.className = `text-xs px-3 py-1.5 rounded-lg border uppercase tracking-wide rarity-${rarity.toLowerCase()}`;
-
-        document.getElementById("itemValue").innerText = (
-          data.value || 0
-        ).toLocaleString();
-
+        // Image
         let img = data.image_url;
         if (img && !img.startsWith("http"))
           img = "https://web.simple-mmo.com" + img;
         document.getElementById("itemImg").src = img;
 
-        const low = data.market?.low ? data.market.low.toLocaleString() : "N/A";
-        const high = data.market?.high
-          ? data.market.high.toLocaleString()
-          : "N/A";
-        document.getElementById("marketLow").innerText = low;
-        document.getElementById("marketHigh").innerText = high;
+        // Rarity Styling
+        const rarity = data.rarity || "Common";
+        const rarityColor = RARITY_DATA[rarity] || RARITY_DATA["Common"];
+        const badge = document.getElementById("itemRarityBadge");
 
+        badge.innerText = rarity;
+        badge.className = `mt-8 z-10 px-4 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-[0.3em] backdrop-blur-md shadow-lg ${rarityColor.color} border-current bg-black/60`;
+
+        // Background Glow
+        const bgGlow = document.getElementById("cardBgGlow");
+        let glowColor = "bg-gray-500";
+        if (rarity === "Legendary") glowColor = "bg-yellow-500";
+        if (rarity === "Celestial") glowColor = "bg-red-600";
+        if (rarity === "Epic") glowColor = "bg-pink-500";
+        if (rarity === "Elite") glowColor = "bg-purple-500";
+        if (rarity === "Rare") glowColor = "bg-blue-500";
+        if (rarity === "Uncommon") glowColor = "bg-emerald-500";
+        bgGlow.className = `absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[120px] opacity-10 pointer-events-none translate-x-1/2 -translate-y-1/2 transition-colors duration-1000 ${glowColor}`;
+
+        // Big Letter
+        const rankLetter = document.getElementById("bgRankLetter");
+        rankLetter.innerText = rarity.charAt(0);
+        rankLetter.className = `absolute font-display font-black text-[15rem] opacity-[0.05] select-none scale-150 ${rarityColor.color}`;
+
+        // Stats
+        const statsContainer = document.getElementById("itemStats");
         let stats = [];
-        if (data.stat1)
-          stats.push(`${data.stat1.toUpperCase()} +${data.stat1modifier}`);
-        if (data.stat2)
-          stats.push(`${data.stat2.toUpperCase()} +${data.stat2modifier}`);
-        document.getElementById("itemStats").innerText =
-          stats.join(" | ") || "No Stats";
+        const statFmt = (n, v) => `
+            <div class="flex items-center gap-2 bg-gradient-to-br from-white/10 to-white/5 px-4 py-2 rounded-lg border border-white/10 hover:border-emerald-400/30 transition">
+                <span class="text-gold text-xs">◆</span> 
+                <span class="text-gray-300 font-bold text-sm uppercase tracking-wide">${n}</span> 
+                <span class="text-emerald-400 font-num text-base font-bold">+${v}</span>
+            </div>`;
+
+        if (data.stat1 && data.stat1 !== "none")
+          stats.push(statFmt(data.stat1, data.stat1modifier));
+        if (data.stat2 && data.stat2 !== "none")
+          stats.push(statFmt(data.stat2, data.stat2modifier));
+
+        if (stats.length > 0) {
+          statsContainer.innerHTML = stats.join("");
+        } else {
+          statsContainer.innerHTML =
+            '<span class="italic text-gray-600 text-xs font-display">Vật phẩm thông thường, không chứa sức mạnh ẩn.</span>';
+        }
       }
 
-      init();
+      // Init
+      loadData(currentId);
     </script>
   </body>
 </html>
