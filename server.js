@@ -1,16 +1,17 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
+const path = require("path"); // <-- BỔ SUNG: Thêm module path
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CẤU HÌNH (Đã chèn lại API Key cứng làm giá trị mặc định)
+// CẤU HÌNH (Key cứng đã được chèn lại theo yêu cầu)
 const CONFIG = {
-  // Nếu biến môi trường không có, sẽ sử dụng Key cứng này
+  // Lấy key từ biến môi trường của Vercel hoặc dùng key cứng
   API_KEY:
     process.env.SMMO_API_KEY ||
-    "WheDlZJpvB7C01xLyMaBe4ezeZeWBQCBUEYx5yr9BNRWLMtCyT61kXRzq9idLYCaYq0E12S9nqwv1N7l", // <--- KEY CỨNG ĐÃ ĐƯỢC CHÈN LẠI
+    "WheDlZJpvB7C01xLyMaBe4ezeZeWBQCBUEYx5yr9BNRWLMtCyT61kXRzq9idLYCaYq0E12S9nqwv1N7l",
   MY_ID: 1283624,
   API_URL: "https://api.simple-mmo.com/v1",
 };
@@ -18,15 +19,21 @@ const CONFIG = {
 app.use(cors());
 app.use(express.static("public"));
 
+// <-- BỔ SUNG: ROUTE HANDLER TƯỜNG MINH CHO ĐƯỜNG DẪN GỐC (/)
+app.get("/", (req, res) => {
+  // Chỉ định chính xác đường dẫn tuyệt đối đến index.html
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+// ----------------------------------------------------
+
 // ROUTE API (Dùng Regex để fix lỗi path-to-regexp)
 app.get(/^\/api\/proxy\/(.*)/, async (req, res) => {
   try {
     const endpoint = req.params[0];
     console.log(`[Proxy] Requesting: ${endpoint}`);
 
-    // Kiểm tra API Key đã được cấu hình chưa (sẽ luôn có do đã hardcode)
+    // Kiểm tra API Key đã được cấu hình chưa
     if (!CONFIG.API_KEY) {
-      // Tuy nhiên, vẫn giữ lỗi này nếu cả hardcode và env đều fail (rất hiếm)
       return res.status(500).json({ error: "API Key not configured." });
     }
 
